@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import {RouterLink} from "vue-router";
+import {RouterLink, useRouter} from "vue-router";
 import {supabase} from "../supabase/init.ts";
+
+const router = useRouter();
 
 const email = ref<string | null>(null);
 const password = ref<string | null>(null);
 const errMSG = ref<string | null>(null);
 
 const isDisabled = computed((): boolean => {
-  return errMSG.value === null;
+  return errMSG.value !== null;
 })
 
-async function handleSubmit ():Promise<void> {
+console.log(isDisabled.value);
+
+async function handleSubmit ():Promise<any> {
   if(email.value === null || password.value === null) {
     errMSG.value = "Please fill in all fields";
     return;
@@ -23,10 +27,21 @@ async function handleSubmit ():Promise<void> {
       password: password.value,
     })
 
+    if (error) throw error;
+
     console.log(data);
+
+    email.value = '';
+    password.value = '';
+    errMSG.value = '';
+
+    router.push({name: 'Home'});
   } catch (e) {
     if(e instanceof Error) {
+      console.log(e);
       errMSG.value = e.message;
+      email.value = '';
+      password.value = '';
     }
   }
 }
@@ -80,7 +95,7 @@ async function handleSubmit ():Promise<void> {
       </div>
 
       <button
-          class="bg-at-light-green rounded-sm text-white py-1 hover:border-at-light-green hover:text-at-light-green hover:bg-white mt-6 px-6 self-start text-sm duration-200 border-2 border-transparent"
+          class="bg-at-light-green rounded-sm text-white py-1 hover:border-at-light-green hover:text-at-light-green hover:bg-white mt-6 px-6 self-start text-sm duration-200 border-2 border-transparent disabled:bg-gray-400 disabled:text-gray-300 disabled:border-none"
           type="submit"
           :disabled="isDisabled"
       >
