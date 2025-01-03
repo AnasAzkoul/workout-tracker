@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
+import {supabase} from "../supabase/init.ts";
+
+async function signOut () {
+  await supabase.auth.signOut()
+}
 </script>
 
 <template>
@@ -26,7 +31,7 @@ import { RouterLink } from "vue-router";
         <RouterLink class="cursor-pointer" :to="{ name: 'Login' }">
           Login
         </RouterLink>
-        <li class="cursor-pointer">Logout</li>
+        <li class="cursor-pointer" @click="signOut">Logout</li>
       </ul>
     </nav>
   </header>

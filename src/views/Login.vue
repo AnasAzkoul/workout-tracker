@@ -3,6 +3,8 @@ import { ref, computed } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import { supabase } from "../supabase/init.ts";
 import Button from "../components/UI/Button/Button.vue";
+import Input from "../components/UI/Input/Input.vue";
+import Label from "../components/UI/Label/Label.vue";
 
 const router = useRouter();
 
@@ -23,14 +25,14 @@ async function handleSubmit(): Promise<any> {
   }
 
   try {
-    let { data, error } = await supabase.auth.signInWithPassword({
+    let { data: {user}, error } = await supabase.auth.signInWithPassword({
       email: email.value,
       password: password.value,
     });
 
     if (error) throw error;
 
-    console.log(data);
+    console.log(user);
 
     email.value = "";
     password.value = "";
@@ -69,28 +71,26 @@ async function handleSubmit(): Promise<any> {
 
       <!-- Email -->
       <div class="flex flex-col mb-2">
-        <label for="email" class="mb-1 text-sm text-at-light-green">
+        <Label for="email">
           Email
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           id="email"
           required
-          class="p-2 text-gray-500 focus:outline-none"
           v-model="email"
         />
       </div>
 
       <!-- Password -->
       <div class="flex flex-col mb-2">
-        <label for="password" class="mb-1 text-sm text-at-light-green">
+        <Label for="password">
           Password
-        </label>
-        <input
+        </Label>
+        <Input
           type="password"
           id="password"
           required
-          class="p-2 text-gray-500 focus:outline-none"
           v-model="password"
         />
       </div>
